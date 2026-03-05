@@ -1,16 +1,41 @@
 pipeline {
-  agent {
-    docker {
-      image 'bharani301085/jenkins-cicd-project:v1'
-      args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
+    agent {
+        docker {
+            // This is your "Factory" image containing JDK 21 and Maven
+            image 'bharani301085/maven-jdk21-agent:v1'
+            args '--user root -v /var/run/docker.sock:/var/run/docker.sock' 
+        }
     }
-  }
-  stages {
-    stage('Checkout') {
-      steps {
-        sh 'echo passed'
-        //git branch: 'main', url: 'https://github.com/iam-veeramalla/Jenkins-Zero-To-Hero.git'
-      }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                // Jenkins usually performs checkout automatically, but we'll log it
+                sh 'echo "Checking out Source Code..."'
+                sh 'java -version'
+                sh 'mvn -version'
+            }
+        }
+
+        stage('Build and Test') {
+            steps {
+                sh 'ls -ltr'
+                // Compiles your Java 21 code and creates the .jar file
+                sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Static Code Analysis') {
+            environment {
+                // Replace with your SonarQube Server IP
+                SONAR_URL = "http://34.204.108.24:9000" 
+            }
+            steps {
+                withCredentials([string(credentialsId: 'SonarQube', variable: 'SONAR_AUTH_TOKEN')]) {
+                    sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
+                }
+            }
+        }
     }
   }
 }
