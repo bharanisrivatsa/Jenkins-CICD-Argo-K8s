@@ -2,6 +2,7 @@ pipeline {
     agent {
         docker {
             image 'bharani301085/maven-jdk21-agent:v1'
+            registryCredentialsId 'bharani-dockerhub'
             args '--user root -v /var/run/docker.sock:/var/run/docker.sock' 
         }
     }
