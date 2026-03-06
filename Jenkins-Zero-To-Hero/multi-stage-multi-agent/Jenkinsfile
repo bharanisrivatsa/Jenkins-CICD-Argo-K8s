@@ -12,10 +12,11 @@ pipeline {
       }
     }
     stage('Build and Test') {
-      steps {
-        sh 'ls -ltr'
-        sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
-      }
+    steps {
+        // This moves into the folder for the entire block
+        dir('Jenkins-Zero-To-Hero/java-maven-sonar-argocd-helm-k8s/spring-boot-app') {
+            sh 'mvn clean package'
+        }
     }
     stage('Static Code Analysis') {
       environment {
