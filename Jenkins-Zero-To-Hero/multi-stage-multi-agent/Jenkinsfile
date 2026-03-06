@@ -1,7 +1,7 @@
 pipeline {
   agent {
     docker {
-      image 'bharani301085/my-spring-app:v1' // Fixed the double username typo
+      image 'maven:3.8.6-eclipse-temurin-11' // Fixed the double username typo
       args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
