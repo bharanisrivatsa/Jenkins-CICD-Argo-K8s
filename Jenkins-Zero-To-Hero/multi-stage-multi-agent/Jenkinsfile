@@ -5,6 +5,12 @@ pipeline {
       args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
     }
   }
+  stage('Cleanup') {
+    steps {
+        // This ensures a fresh start every time
+        cleanWs() 
+    }
+}
   stages {
     stage('Checkout') {
       steps {
