@@ -72,3 +72,9 @@ pipeline {
     post {
         always {
             node(null) {
+                // Cleanup local images on the host EC2 to save disk space
+                sh "docker rmi ${DOCKER_IMAGE}:${BUILD_NUMBER} || true"
+            }
+        }
+    }
+}
