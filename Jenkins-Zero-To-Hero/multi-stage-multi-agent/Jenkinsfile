@@ -18,6 +18,7 @@ pipeline {
             sh 'mvn clean package'
         }
     }
+    }   
     stage('Static Code Analysis') {
       environment {
         SONAR_URL = "http://18.234.67.228:9000"
